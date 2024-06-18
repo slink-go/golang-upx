@@ -1,14 +1,29 @@
 
-GOLANG_VERSION=1.22.2
-UPX_VERSION=3.96-2
+GOLANG_VERSION=1.22.4
+#UPX_VERSION=3.96-2
+UPX_VERSION=4.2.2-3~bpo12+1
+UPX_VERSION_UPD=$(echo ${UPX_VERSION} | tr '~\+' '_')
+UPX_VERSION=$(printf %s "${UPX_VERSION}" | jq -sRr @uri)
 PLATFORMS=linux/amd64,linux/arm64
 
-docker buildx create --use                                && \
-docker buildx build                                          \
-    -f Dockerfile                                            \
-    --build-arg "GOLANG_VERSION=${GOLANG_VERSION}"           \
-    --build-arg "UPX_VERSION=${UPX_VERSION}"                 \
-    --platform ${PLATFORMS}                                  \
-    --push                                                   \
-    -t mvkvl/golang_upx:${GOLANG_VERSION}_${UPX_VERSION} .
+source .env || true
+
+if [ -z "$DOCKER_LOGIN" ]; then
+    echo "Error: DOCKER_LOGIN not set"
+    exit 1
+fi
+if [ -z "$DOCKER_PASSWORD" ]; then
+    echo "Error: DOCKER_PASSWORD not set"
+    exit 1
+fi
+
+echo $DOCKER_PASSWORD | docker login -u $DOCKER_LOGIN --password-stdin   && \
+docker buildx create --use                                               && \
+docker buildx build                                                         \
+    -f Dockerfile                                                           \
+    --build-arg "GOLANG_VERSION=${GOLANG_VERSION}"                          \
+    --build-arg "UPX_VERSION=${UPX_VERSION}"                                \
+    --platform ${PLATFORMS}                                                 \
+    --push                                                                  \
+    -t mvkvl/golang_upx:${GOLANG_VERSION}_${UPX_VERSION_UPD} .
 docker buildx rm
