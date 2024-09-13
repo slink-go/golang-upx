@@ -23,3 +23,4 @@ RUN apt update -y && apt install -y wget libucl1 zip && \
     dpkg -i $(ls *.deb)
 
 FROM main-${TARGETOS}-${TARGETARCH}${TARGETVARIANT}
+RUN go install github.com/a-h/templ/cmd/templ@latest

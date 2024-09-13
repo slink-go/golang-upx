@@ -1,15 +1,15 @@
 
 GOLANG_VERSION=1.23.1
-#UPX_VERSION=3.96-2
-UPX_VERSION=4.2.4-1
-UPX_VERSION_UPD=$(echo ${UPX_VERSION} | tr '~\+' '_')
-UPX_VERSION=$(printf %s "${UPX_VERSION}" | jq -sRr @uri)
+UPX_VERSION=4.2.2-3~bpo12+1
+
 PLATFORMS=linux/arm/v7,linux/arm64/v8,linux/amd64
+
+UPX_VERSION_UPD=$(echo ${UPX_VERSION} | tr '~\+' '_' | awk -F '_' '{print $1}')
+UPX_VERSION=$(printf %s "${UPX_VERSION}" | jq -sRr @uri)
 
 echo "GOLANG_VERSION=$GOLANG_VERSION"
 echo "UPX_VERSION=$UPX_VERSION"
 echo "UPX_VERSION_UPD=$UPX_VERSION_UPD"
-
 
 source .env || true
 
