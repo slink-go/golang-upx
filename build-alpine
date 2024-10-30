@@ -1,0 +1,30 @@
+
+GOLANG_VERSION=1.23.2
+ALPINE_VERSION=3.20
+
+PLATFORMS=linux/arm/v7,linux/arm64/v8,linux/amd64
+
+echo "GOLANG_VERSION=$GOLANG_VERSION"
+echo "ALPINE_VERSION=$ALPINE_VERSION"
+
+source .env || true
+
+if [ -z "$DOCKER_LOGIN" ]; then
+    echo "Error: DOCKER_LOGIN not set"
+    exit 1
+fi
+if [ -z "$DOCKER_PASSWORD" ]; then
+    echo "Error: DOCKER_PASSWORD not set"
+    exit 1
+fi
+
+echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_LOGIN" --password-stdin   && \
+docker buildx create --use                                                   && \
+docker buildx build                                                             \
+    -f Dockerfile-alpine                                                        \
+    --build-arg "GOLANG_VERSION=${GOLANG_VERSION}"                              \
+    --build-arg "ALPINE_VERSION=${ALPINE_VERSION}"                              \
+    --platform ${PLATFORMS}                                                     \
+    --push                                                                      \
+    -t slinkgo/golang_upx:${GOLANG_VERSION}-alpine${ALPINE_VERSION} .
+docker buildx rm
