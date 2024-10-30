@@ -26,5 +26,7 @@ docker buildx build                                                             
     --build-arg "ALPINE_VERSION=${ALPINE_VERSION}"                              \
     --platform ${PLATFORMS}                                                     \
     --push                                                                      \
-    -t slinkgo/golang_upx:${GOLANG_VERSION}-alpine${ALPINE_VERSION} .
+    -t slinkgo/golang_upx:${GOLANG_VERSION}-alpine${ALPINE_VERSION}             \
+    -t slinkgo/golang_upx:${GOLANG_VERSION}-alpine                              \
+    -t slinkgo/golang_upx:alpine .
 docker buildx rm
