@@ -1,5 +1,5 @@
 
-GOLANG_VERSION=1.23.2
+GOLANG_VERSION=1.24.0
 UPX_VERSION=4.2.2-3~bpo12+1
 
 PLATFORMS=linux/arm/v7,linux/arm64/v8,linux/amd64
