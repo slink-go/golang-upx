@@ -1,6 +1,8 @@
 
-GOLANG_VERSION=1.24.0
-UPX_VERSION=4.2.2-3~bpo12+1
+GOLANG_VERSION=1.25.3
+DEBIAN_VERSION=trixie
+#UPX_VERSION=4.2.2-3~bpo12+1
+UPX_VERSION=4.2.4-1.1
 
 PLATFORMS=linux/arm/v7,linux/arm64/v8,linux/amd64
 
@@ -8,6 +10,7 @@ UPX_VERSION_UPD=$(echo ${UPX_VERSION} | tr '~\+' '_' | awk -F '_' '{print $1}')
 UPX_VERSION=$(printf %s "${UPX_VERSION}" | jq -sRr @uri)
 
 echo "GOLANG_VERSION=$GOLANG_VERSION"
+echo "DEBIAN_VERSION=$DEBIAN_VERSION"
 echo "UPX_VERSION=$UPX_VERSION"
 echo "UPX_VERSION_UPD=$UPX_VERSION_UPD"
 
@@ -25,10 +28,14 @@ fi
 echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_LOGIN" --password-stdin   && \
 docker buildx create --use                                                   && \
 docker buildx build                                                             \
-    -f Dockerfile                                                               \
+    -f Dockerfile-debian                                                        \
     --build-arg "GOLANG_VERSION=${GOLANG_VERSION}"                              \
+    --build-arg "DEBIAN_VERSION=${DEBIAN_VERSION}"                              \
     --build-arg "UPX_VERSION=${UPX_VERSION}"                                    \
     --platform ${PLATFORMS}                                                     \
     --push                                                                      \
-    -t slinkgo/golang_upx:${GOLANG_VERSION}_${UPX_VERSION_UPD} .
+    -t slinkgo/golang_upx:${GOLANG_VERSION}-${DEBIAN_VERSION}                   \
+    -t slinkgo/golang_upx:${GOLANG_VERSION}-debian                              \
+    -t slinkgo/golang_upx:debian                                                \
+    -t slinkgo/golang_upx:${DEBIAN_VERSION} .
 docker buildx rm
