@@ -1,12 +1,14 @@
 ARG GOLANG_VERSION=""
 ARG DEBIAN_VERSION=""
 ARG UPX_VERSION=""
+ARG GOLANGCI_LINT_VERSION=""
 
 FROM golang:${GOLANG_VERSION}-${DEBIAN_VERSION} AS main-linux-arm64
 ARG GOLANG_VERSION
 ARG DEBIAN_VERSION
 ARG UPX_VERSION
-RUN apt update -y && apt install -y wget libucl1 zip && \
+ARG GOLANGCI_LINT_VERSION
+RUN apt update -y && apt install -y wget libucl1 zip bash && \
     wget http://ftp.de.debian.org/debian/pool/main/u/upx-ucl/upx-ucl_${UPX_VERSION}_arm64.deb &&\
     dpkg -i $(ls *.deb)
 
@@ -14,7 +16,8 @@ FROM golang:${GOLANG_VERSION}-${DEBIAN_VERSION} AS main-linux-amd64
 ARG GOLANG_VERSION
 ARG DEBIAN_VERSION
 ARG UPX_VERSION
-RUN apt update -y && apt install -y wget libucl1 zip && \
+ARG GOLANGCI_LINT_VERSION
+RUN apt update -y && apt install -y wget libucl1 zip bash && \
     wget http://ftp.de.debian.org/debian/pool/main/u/upx-ucl/upx-ucl_${UPX_VERSION}_amd64.deb &&\
     dpkg -i $(ls *.deb)
 
@@ -22,9 +25,15 @@ FROM golang:${GOLANG_VERSION}-${DEBIAN_VERSION} AS main-linux-armv7
 ARG GOLANG_VERSION
 ARG DEBIAN_VERSION
 ARG UPX_VERSION
-RUN apt update -y && apt install -y wget libucl1 zip && \
+ARG GOLANGCI_LINT_VERSION
+RUN apt update -y && apt install -y wget libucl1 zip bash && \
     wget http://ftp.de.debian.org/debian/pool/main/u/upx-ucl/upx-ucl_${UPX_VERSION}_armhf.deb &&\
     dpkg -i $(ls *.deb)
 
 FROM main-${TARGETOS}-${TARGETARCH}${TARGETVARIANT}
-RUN go install github.com/a-h/templ/cmd/templ@latest
+ARG GOLANGCI_LINT_VERSION
+RUN wget -O- -nv https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s v${GOLANGCI_LINT_VERSION}
+RUN go install github.com/a-h/templ/cmd/templ@latest          && \
+    go install golang.org/x/vuln/cmd/govulncheck@latest       && \
+    go install github.com/goreleaser/nfpm/v2/cmd/nfpm@latest  && \
+    rm -rf /go/pkg/*
