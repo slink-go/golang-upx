@@ -8,7 +8,7 @@ ARG GOLANG_VERSION
 ARG DEBIAN_VERSION
 ARG UPX_VERSION
 ARG GOLANGCI_LINT_VERSION
-RUN apt update -y && apt install -y wget libucl1 zip bash curl make && \
+RUN apt update -y && apt install -y wget libucl1 zip bash curl make git openssh-client && \
     wget http://ftp.de.debian.org/debian/pool/main/u/upx-ucl/upx-ucl_${UPX_VERSION}_arm64.deb &&\
     dpkg -i $(ls *.deb)
 
@@ -17,7 +17,7 @@ ARG GOLANG_VERSION
 ARG DEBIAN_VERSION
 ARG UPX_VERSION
 ARG GOLANGCI_LINT_VERSION
-RUN apt update -y && apt install -y wget libucl1 zip bash curl make && \
+RUN apt update -y && apt install -y wget libucl1 zip bash curl make git openssh-client && \
     wget http://ftp.de.debian.org/debian/pool/main/u/upx-ucl/upx-ucl_${UPX_VERSION}_amd64.deb &&\
     dpkg -i $(ls *.deb)
 
@@ -26,7 +26,7 @@ ARG GOLANG_VERSION
 ARG DEBIAN_VERSION
 ARG UPX_VERSION
 ARG GOLANGCI_LINT_VERSION
-RUN apt update -y && apt install -y wget libucl1 zip bash curl make && \
+RUN apt update -y && apt install -y wget libucl1 zip bash curl make git openssh-client && \
     wget http://ftp.de.debian.org/debian/pool/main/u/upx-ucl/upx-ucl_${UPX_VERSION}_armhf.deb &&\
     dpkg -i $(ls *.deb)
 
